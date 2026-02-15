@@ -40,5 +40,5 @@ app.post('/api/generate-pdf', async (req, res) => {
 // serve generated files
 app.use('/out', express.static(STORAGE, { maxAge: '1h' }));
 
-const PORT = 3003;
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, ()=> console.log('pdf service listening', PORT));
