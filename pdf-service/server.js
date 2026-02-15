@@ -59,8 +59,11 @@ app.post('/api/generate-pdf', async (req, res) => {
     await page.setContent(html, { waitUntil: 'networkidle0' });
     await page.pdf({ path: outPath, format: 'A4', printBackground: true });
     await page.close();
-    // return download URL
-    res.json({ url: '/out/' + id + '.pdf' });
+    // return download URL (absolute so browsers can open/download)
+    const host = req.get('host');
+    const proto = req.protocol;
+    const fullUrl = `${proto}://${host}/out/${id}.pdf`;
+    res.json({ url: fullUrl });
   }catch(err){
     console.error(err);
     res.status(500).json({ error: 'generate_failed' });
