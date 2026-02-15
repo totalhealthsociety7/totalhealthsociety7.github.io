@@ -1,0 +1,8 @@
+# Node modules
+**/node_modules
+
+# PDF outputs
+pdf-service/out
+
+# OS files
+.DS_Store
