@@ -1,51 +1,19 @@
-FROM node:18-bullseye-slim
+FROM zenika/alpine-chrome:with-node
 
-# Install Chromium and dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    fonts-liberation \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libc6 \
-    libcairo2 \
-    libdbus-1-3 \
-    libdrm2 \
-    libgbm1 \
-    libglib2.0-0 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-6 \
-    libx11-xcb1 \
-    libxcb1 \
-    libxcomposite1 \
-    libxcursor1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxi6 \
-    libxrandr2 \
-    libxrender1 \
-    wget \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Chromium
-RUN apt-get update && apt-get install -y chromium --no-install-recommends && rm -rf /var/lib/apt/lists/*
-
+# Use a lightweight image that already includes Chromium and Node
 WORKDIR /usr/src/app
-COPY package.json package-lock.json* ./
 
-# Install production deps
+# Copy package files and install production deps
+COPY package.json package-lock.json* ./
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-# use npm install omitting dev deps to avoid optional dev packages
 RUN npm install --production --omit=dev --no-audit --no-fund || true
 
+# Copy app files
 COPY . .
 
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+# Expose port and start
 ENV PORT=3000
-
 EXPOSE $PORT
 
 CMD ["node", "server.js"]
