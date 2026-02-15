@@ -8,6 +8,11 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+// Also serve the UI static files (pdf-factory) at the site root for fast testing
+const uiPath = path.join(__dirname, '..', 'pdf-factory');
+if (fs.existsSync(uiPath)) {
+  app.use('/', express.static(uiPath));
+}
 
 const STORAGE = path.join(__dirname, 'out');
 if (!fs.existsSync(STORAGE)) fs.mkdirSync(STORAGE, { recursive: true });

@@ -7,7 +7,9 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json* ./
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-RUN npm install --production --omit=dev --no-audit --no-fund || true
+# Make sure npm can write files during install
+ENV NPM_CONFIG_UNSAFE_PERM=true
+RUN npm install --production --omit=dev --no-audit --no-fund --unsafe-perm || true
 
 # Copy app files
 COPY . .
