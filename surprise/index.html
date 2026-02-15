@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Corvus — Money Sprint</title>
+<style>
+  :root{--bg:#0b1020;--card:#111a33;--txt:#eaf0ff;--mut:#9fb0d6;--acc:#7c5cff;--ok:#2ee59d;--warn:#ffcc66;}
+  *{box-sizing:border-box} body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial; background:radial-gradient(1200px 800px at 20% 10%,#1a2a66 0%,#0b1020 60%); color:var(--txt)}
+  a{color:var(--ok)}
+  .wrap{max-width:980px;margin:0 auto;padding:28px}
+  .top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--acc),#30d5ff);display:grid;place-items:center;color:#081023;font-weight:900}
+  .h1{font-size:28px;font-weight:900;letter-spacing:.2px;margin:0}
+  .sub{margin:6px 0 0;color:var(--mut)}
+  .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--mut);font-size:13px}
+  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:18px}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:rgba(17,26,51,.85);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+  .card h2{margin:0 0 10px;font-size:16px}
+  label{display:block;color:var(--mut);font-size:12px;margin:10px 0 6px}
+  input,textarea,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);color:var(--txt);outline:none}
+  textarea{min-height:78px;resize:vertical}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:520px){.row{grid-template-columns:1fr}}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  button{cursor:pointer;border:none;border-radius:12px;padding:11px 14px;font-weight:800}
+  .primary{background:linear-gradient(135deg,var(--acc),#30d5ff);color:#091027}
+  .ghost{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid rgba(255,255,255,.10)}
+  .danger{background:rgba(255,120,120,.12);color:#ffd0d0;border:1px solid rgba(255,120,120,.25)}
+  .out{white-space:pre-wrap;line-height:1.45;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12.5px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:12px;min-height:220px}
+  .mini{color:var(--mut);font-size:12px;margin-top:10px}
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+  .k{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+  .k .n{font-weight:900;font-size:16px} .k .l{color:var(--mut);font-size:12px;margin-top:2px}
+  .ok{color:var(--ok)} .warn{color:var(--warn)}
+</style></head><body><div class="wrap">
+  <div class="top">
+    <div>
+      <div class="brand"><div class="logo">C</div><div>
+        <p class="h1" style="margin:0">Corvus — Money Sprint</p>
+        <p class="sub">A tiny app that turns your idea into a sellable offer + outreach + a 7‑day cash plan.</p>
+      </div></div>
+      <p class="sub" style="margin-top:10px">Goal: help Al make money. Fast. No fluff. Build → sell → deliver.</p>
+    </div>
+    <div class="pill" title="Works offline. No account. No tracking.">Offline • Single-file • Private</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1) Inputs</h2>
+      <div class="row">
+        <div>
+          <label>Niche / audience</label>
+          <input id="aud" placeholder="e.g., small clinics, realtors, local restaurants" />
+        </div>
+        <div>
+          <label>What you can do</label>
+          <input id="skill" placeholder="e.g., automation, websites, ads, cold email, AI setup" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Big pain you solve</label>
+          <input id="pain" placeholder="e.g., no leads, slow follow-up, messy ops, low conversion" />
+        </div>
+        <div>
+          <label>Offer type</label>
+          <select id="type">
+            <option value="service">Service (fast cash)</option>
+            <option value="product">Product/MVP (start users)</option>
+            <option value="content">Content → leads</option>
+          </select>
+        </div>
+      </div>
+      <label>Constraints (optional)</label>
+      <textarea id="cons" placeholder="e.g., no ads, only Telegram, 2h/day, English/French/Arabic"></textarea>
+
+      <div class="btns">
+        <button class="primary" id="gen">Generate plan</button>
+        <button class="ghost" id="copy">Copy output</button>
+        <button class="danger" id="reset">Reset</button>
+      </div>
+
+      <div class="kpi">
+        <div class="k"><div class="n" id="k1">—</div><div class="l">Target price</div></div>
+        <div class="k"><div class="n" id="k2">—</div><div class="l">Daily outreach</div></div>
+        <div class="k"><div class="n" id="k3">—</div><div class="l">Days to first $</div></div>
+      </div>
+      <div class="mini">Tip: keep it boring. A simple offer + consistent outreach beats “perfect” ideas.</div>
+    </div>
+
+    <div class="card">
+      <h2>2) Output</h2>
+      <div id="out" class="out"></div>
+      <div class="mini">If you want, paste this output to Corvus and I’ll refine it into a real landing page + pitch deck + scripts.</div>
+    </div>
+  </div>
+
+  <p class="mini">Made for Al by Corvus. If you like this, the next surprise is a one‑click landing page + lead capture + CRM pipeline.</p>
+</div>
+<script>
+  const $ = (id)=>document.getElementById(id);
+  const aud=$('aud'), skill=$('skill'), pain=$('pain'), type=$('type'), cons=$('cons');
+  const out=$('out'), k1=$('k1'), k2=$('k2'), k3=$('k3');
+
+  function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+
+  function moneyPlan(){
+    const A=(aud.value||'a specific niche').trim();
+    const S=(skill.value||'a clear skill').trim();
+    const P=(pain.value||'a painful problem').trim();
+    const C=(cons.value||'').trim();
+    const T=type.value;
+
+    const prices = T==='service' ? [299,499,750,1200] : T==='product' ? [9,19,29,49] : [0,49,99];
+    const price = pick(prices);
+    const outreach = T==='service' ? pick([20,30,40]) : T==='product' ? pick([10,15,20]) : pick([5,10,15]);
+    const first$ = T==='service' ? pick([2,3,5,7]) : T==='product' ? pick([7,14,21]) : pick([10,21,30]);
+
+    k1.textContent = '$' + price;
+    k2.textContent = outreach + '/day';
+    k3.textContent = first$ + ' days';
+
+    const offer = T==='service'
+      ? `I help ${A} fix “${P}” using ${S} in 7 days — or you don’t pay.`
+      : T==='product'
+      ? `A simple tool for ${A} to reduce “${P}” with ${S} (launch MVP + iterate).`
+      : `A content engine for ${A}: turn “${P}” into leads using ${S}.`;
+
+    const deliver = T==='service'
+      ? `Deliverable: 1) quick audit, 2) implementation, 3) dashboard/report, 4) handoff video.`
+      : T==='product'
+      ? `Deliverable: 1) MVP, 2) onboarding, 3) feedback loop, 4) weekly releases.`
+      : `Deliverable: 1) 10 post angles, 2) 5 scripts, 3) lead magnet, 4) simple funnel.`;
+
+    const script1 = `Hey {{name}} — quick question. Do you ever feel ${P} is costing you money in ${A}?
+I’m building a ${T==='service'?'7‑day fix':'small tool'} using ${S}. If I show you a 10‑minute demo tailored to you, would you be open to it this week?`;
+
+    const script2 = `If I could reduce “${P}” by ~20–40% in the next ${T==='service'?'7 days':'2–3 weeks'}, what would that be worth?
+If the answer is “not much”, no worries — I’ll disappear.`;
+
+    const day = (n, text)=>`Day ${n}: ${text}`;
+
+    const plan = [
+`=== CORVUS MONEY SPRINT ===
+Offer: ${offer}
+${deliver}
+Constraints: ${C||'(none)'}
+
+Pricing:
+- Start at $${price}${T==='product'?'/mo':''}
+- Raise price after 3 wins (proof > polish)
+
+Distribution (do this every day):
+- Reach out to ${outreach} targets/day (DM/email/LinkedIn)
+- 1 short proof post/day (what you built / learned)
+- Book 1 call/day target
+
+Outreach scripts:
+1) ${script1}
+
+2) ${script2}
+
+7‑Day plan:
+${day(1,'Pick ONE niche, build ONE promise, write a 1‑page offer. Make a list of 200 targets.')}
+${day(2,'Send outreach. Book 2–4 calls. Build a tiny demo or mockup.')}
+${day(3,'Do calls. Close 1 paid pilot. Deliver first quick win within 24h.')}
+${day(4,'Turn results into proof. Raise urgency. Keep outreach consistent.')}
+${day(5,'Deliver. Ask for testimonial + referral. Close second client.')}
+${day(6,'Systemize: checklist + template + reuse. Improve demo.')}
+${day(7,'Review numbers. Double down on what booked calls. Increase price.')}
+
+Scorecard:
+- Leads contacted today: __
+- Calls booked: __
+- Paid pilots closed: __
+- Revenue: __
+
+Next step:
+Paste this plan into Telegram and tell Corvus your niche + skill, and he’ll refine it into a real, sellable offer + landing page.
+`].join('');
+
+    return plan;
+  }
+
+  function setOut(text){ out.textContent = text; }
+
+  $('gen').addEventListener('click', ()=> setOut(moneyPlan()));
+  $('copy').addEventListener('click', async ()=>{
+    const text = out.textContent.trim();
+    if(!text){setOut('Generate first.'); return;}
+    try{ await navigator.clipboard.writeText(text); setOut(text + "\n\n[Copied to clipboard ✅]"); }
+    catch(e){ setOut(text + "\n\nCopy failed (browser blocked). You can select and copy manually."); }
+  });
+  $('reset').addEventListener('click', ()=>{aud.value='';skill.value='';pain.value='';cons.value=''; setOut(''); k1.textContent=k2.textContent=k3.textContent='—';});
+
+  // tiny default surprise
+  aud.value='local businesses';
+  skill.value='AI automation + simple websites';
+  pain.value='slow follow-up + missed leads';
+  setOut(moneyPlan());
+</script></body></html>

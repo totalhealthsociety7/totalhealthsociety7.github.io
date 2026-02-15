@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: corvus-site
+    env: node
+    plan: free
+    branch: main
+    buildCommand: "cd site-server && npm install --no-audit --no-fund"
+    startCommand: "cd site-server && node server.js"
+    autoDeploy: true
+  - type: background
+    name: corvus-pdf
+    env: node
+    plan: free
+    branch: main
+    buildCommand: "cd pdf-service && npm install --no-audit --no-fund"
+    startCommand: "cd pdf-service && node server.js"
+    autoDeploy: true

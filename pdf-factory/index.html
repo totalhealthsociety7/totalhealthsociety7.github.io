@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Corvus PDF Factory (MVP)</title>
+  <style>
+    :root{--bg:#0b1020;--card:#111a33;--txt:#eaf0ff;--mut:#9fb0d6;--acc:#7c5cff;--ok:#2ee59d;--warn:#ffcc66;--bd:rgba(255,255,255,.10)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1100px 700px at 20% 0%,#1b2c6b 0%,#0b1020 60%);color:var(--txt)}
+    .wrap{max-width:980px;margin:0 auto;padding:22px}
+    .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--acc),#30d5ff);display:grid;place-items:center;color:#081023;font-weight:1000}
+    h1{font-size:22px;margin:0}
+    .sub{margin:6px 0 0;color:var(--mut);max-width:62ch}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--mut);font-size:13px;border:1px solid var(--bd)}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    .card{background:rgba(17,26,51,.88);border:1px solid var(--bd);border-radius:18px;padding:14px;box-shadow:0 16px 36px rgba(0,0,0,.35)}
+    .card h2{margin:0 0 10px;font-size:15px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:820px){.row{grid-template-columns:1fr}}
+    label{display:block;color:var(--mut);font-size:12px;margin:10px 0 6px}
+    input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--bd);background:rgba(0,0,0,.22);color:var(--txt);outline:none}
+    .checks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media (max-width:680px){.checks{grid-template-columns:1fr}}
+    .check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;border:1px solid var(--bd);background:rgba(255,255,255,.05)}
+    .check input{width:auto;margin-top:3px}
+    .check b{display:block}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    button{cursor:pointer;border:none;border-radius:12px;padding:11px 14px;font-weight:900}
+    .primary{background:linear-gradient(135deg,var(--acc),#30d5ff);color:#091027}
+    .ghost{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid var(--bd)}
+    .ok{color:var(--ok)} .warn{color:var(--warn)}
+    .out{white-space:pre-wrap;line-height:1.45;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12.5px;background:rgba(0,0,0,.25);border:1px solid var(--bd);border-radius:14px;padding:12px;min-height:120px}
+    .mini{color:var(--mut);font-size:12px;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="brand">
+          <div class="logo">C</div>
+          <div>
+            <h1>Corvus PDF Factory (MVP)</h1>
+            <div class="sub">Checkboxes → generates a clean, sellable PDF (cookbooks, coloring pages, planners, mini‑ebooks). No payments; testing only.</div>
+          </div>
+        </div>
+      </div>
+      <div class="pill">Single-file app • Generates PDF in-browser</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>1) Choose what to generate</h2>
+        <div class="checks">
+          <div class="check"><input type="checkbox" id="cookbook" checked /><div><b>Cookbook</b><div class="mini">Cover + table of contents + recipe pages</div></div></div>
+          <div class="check"><input type="checkbox" id="coloring" checked /><div><b>Coloring book</b><div class="mini">Outline pages (simple shapes + patterns)</div></div></div>
+          <div class="check"><input type="checkbox" id="planner" /><div><b>Planner bundle</b><div class="mini">Weekly planner + habit tracker + budget page</div></div></div>
+          <div class="check"><input type="checkbox" id="ebook" /><div><b>Mini‑ebook</b><div class="mini">Short structured ebook template</div></div></div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Theme</label>
+            <select id="theme">
+              <option value="minimal">Minimal</option>
+              <option value="bold" selected>Bold</option>
+              <option value="cute">Cute</option>
+              <option value="luxury">Luxury</option>
+            </select>
+          </div>
+          <div>
+            <label>Format</label>
+            <select id="fmt">
+              <option value="letter">US Letter</option>
+              <option value="a4" selected>A4</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Title</label>
+            <input id="title" value="The Busy Week Reset" />
+          </div>
+          <div>
+            <label>Subtitle</label>
+            <input id="subtitle" value="Simple systems for food, focus, and follow‑through" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Audience (for cover copy)</label>
+            <select id="aud">
+              <option>Unisex</option>
+              <option>Women</option>
+              <option>Men</option>
+            </select>
+          </div>
+          <div>
+            <label>Page count (approx)</label>
+            <select id="size">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" id="gen">Generate PDF</button>
+          <button class="ghost" id="sample">Quick presets</button>
+        </div>
+        <div class="mini">This MVP uses built-in templates (no AI text/images yet). Next version can add image generation via a secure backend so your API key isn’t exposed.</div>
+      </div>
+
+      <div class="card">
+        <h2>2) Status</h2>
+        <div id="out" class="out">Ready.</div>
+        <div class="mini">If download doesn’t start, your browser blocked it—try Chrome/Safari and allow downloads.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+    const $ = (id)=>document.getElementById(id);
+    const out = $('out');
+
+    function log(msg){ out.textContent = msg; }
+
+    function themeColors(theme){
+      if(theme==='minimal') return {a:'#111111', b:'#666666', accent:'#111111'};
+      if(theme==='cute') return {a:'#ff4da6', b:'#7c5cff', accent:'#30d5ff'};
+      if(theme==='luxury') return {a:'#111111', b:'#b08d57', accent:'#b08d57'};
+      return {a:'#0b1020', b:'#7c5cff', accent:'#30d5ff'}; // bold
+    }
+
+    function pageSize(fmt){
+      // jsPDF uses pt when unit='pt'
+      // letter: 612x792, a4: 595.28x841.89
+      return fmt==='letter' ? {w:612,h:792,name:'letter'} : {w:595.28,h:841.89,name:'a4'};
+    }
+
+    function addCover(doc, meta){
+      const {w,h} = meta.size;
+      const c = meta.colors;
+
+      // background gradient-ish blocks
+      doc.setFillColor(11,16,32); doc.rect(0,0,w,h,'F');
+      doc.setFillColor(124,92,255); doc.setGState(new doc.GState({opacity:0.22})); doc.roundedRect(-40, -40, w*0.9, h*0.55, 24, 24, 'F');
+      doc.setFillColor(48,213,255); doc.setGState(new doc.GState({opacity:0.14})); doc.roundedRect(w*0.25, h*0.12, w*0.85, h*0.6, 28, 28, 'F');
+      doc.setGState(new doc.GState({opacity:1}));
+
+      doc.setTextColor(234,240,255);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(30);
+      doc.text(meta.title, 48, 120, {maxWidth: w-96});
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(14);
+      doc.setTextColor(159,176,214);
+      doc.text(meta.subtitle, 48, 160, {maxWidth: w-96});
+
+      doc.setFontSize(12);
+      doc.text(`For: ${meta.audience} • Generated by Corvus PDF Factory`, 48, h-72);
+
+      // badge
+      doc.setFillColor(46,229,157);
+      doc.roundedRect(48, h-54, 170, 28, 14, 14, 'F');
+      doc.setTextColor(9,16,39);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.text('TEST EDITION', 62, h-35);
+    }
+
+    function addHeader(doc, meta, title){
+      const {w} = meta.size;
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(12);
+      doc.setTextColor(20,25,45);
+      doc.setFillColor(240,244,255);
+      doc.rect(0,0,w,42,'F');
+      doc.text(title, 48, 26);
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(10);
+      doc.setTextColor(90,100,120);
+      doc.text(meta.title, w-48, 26, {align:'right'});
+    }
+
+    function addTOC(doc, meta, items){
+      doc.addPage(meta.size.name);
+      addHeader(doc, meta, 'Table of Contents');
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(12);
+      doc.setTextColor(20,25,45);
+      let y=72;
+      for(const it of items){
+        doc.text(it, 60, y);
+        y += 18;
+      }
+    }
+
+    function cookbookPages(doc, meta, count){
+      const recipes = [
+        ['15‑Minute Lemon Garlic Chicken','Chicken, lemon, garlic, olive oil, herbs','Fast, bright, high‑protein dinner.'],
+        ['One‑Pan Veggie & Chickpea Bowl','Chickpeas, peppers, onion, spices, yogurt','Crispy + creamy in one pan.'],
+        ['Overnight Oats 3 Ways','Oats, milk, chia, honey, fruit','Grab‑and‑go breakfast.'],
+        ['Budget Pasta Primavera','Pasta, frozen veg, parmesan, garlic','Cheap and satisfying.'],
+        ['Sheet‑Pan Salmon & Greens','Salmon, broccoli, mustard, lemon','Minimal cleanup, big flavor.'],
+      ];
+
+      for(let i=0;i<count;i++){
+        const r = recipes[i % recipes.length];
+        doc.addPage(meta.size.name);
+        addHeader(doc, meta, `Recipe ${i+1}`);
+        doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(20,25,45);
+        doc.text(r[0], 48, 78, {maxWidth: meta.size.w-96});
+
+        doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(60,70,90);
+        doc.text('Ingredients', 48, 110);
+        doc.setDrawColor(210); doc.line(48, 116, meta.size.w-48, 116);
+        doc.text(r[1], 48, 138, {maxWidth: meta.size.w-96});
+
+        doc.setTextColor(60,70,90);
+        doc.text('Method', 48, 190);
+        doc.line(48, 196, meta.size.w-48, 196);
+        doc.setTextColor(20,25,45);
+        doc.text('1) Prep ingredients. 2) Cook in a single pan. 3) Taste, adjust salt/acid. 4) Serve.', 48, 220, {maxWidth: meta.size.w-96});
+
+        doc.setTextColor(60,70,90);
+        doc.text('Notes', 48, 290);
+        doc.line(48, 296, meta.size.w-48, 296);
+        doc.setTextColor(20,25,45);
+        doc.text(r[2], 48, 320, {maxWidth: meta.size.w-96});
+
+        // simple photo placeholder
+        doc.setFillColor(245,247,255);
+        doc.roundedRect(48, 360, meta.size.w-96, 260, 16, 16, 'F');
+        doc.setTextColor(120,130,150);
+        doc.setFont('helvetica','bold');
+        doc.text('IMAGE AREA (v2 can generate)', meta.size.w/2, 500, {align:'center'});
+      }
+    }
+
+    function coloringPages(doc, meta, count){
+      for(let i=0;i<count;i++){
+        doc.addPage(meta.size.name);
+        addHeader(doc, meta, `Coloring Page ${i+1}`);
+
+        const w = meta.size.w, h = meta.size.h;
+        const left=60, top=80, boxW=w-120, boxH=h-160;
+
+        doc.setDrawColor(25);
+        doc.setLineWidth(1);
+        doc.roundedRect(left, top, boxW, boxH, 18, 18);
+
+        // draw pattern: concentric circles + petals
+        const cx = w/2, cy = h/2 + 30;
+        doc.setLineWidth(0.8);
+        for(let r=40;r<240;r+=22){
+          doc.circle(cx, cy, r);
+        }
+        for(let a=0;a<360;a+=18){
+          const rad = a * Math.PI/180;
+          const x1 = cx + Math.cos(rad)*70;
+          const y1 = cy + Math.sin(rad)*70;
+          const x2 = cx + Math.cos(rad)*250;
+          const y2 = cy + Math.sin(rad)*250;
+          doc.line(x1,y1,x2,y2);
+        }
+
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(60);
+        doc.setFontSize(10);
+        doc.text('Print & color. For personal use.', w/2, h-60, {align:'center'});
+      }
+    }
+
+    function plannerPages(doc, meta){
+      // weekly planner
+      doc.addPage(meta.size.name);
+      addHeader(doc, meta, 'Weekly Planner');
+      const w=meta.size.w;
+      let y=70;
+      doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(20,25,45);
+      doc.text('Top 3 priorities:', 48, y);
+      doc.setDrawColor(190);
+      doc.rect(48, y+10, w-96, 60);
+      y += 100;
+      doc.text('Schedule:', 48, y);
+      doc.rect(48, y+10, w-96, 360);
+
+      // habit tracker
+      doc.addPage(meta.size.name);
+      addHeader(doc, meta, 'Habit Tracker');
+      doc.setFont('helvetica','normal'); doc.setFontSize(11);
+      const left=48, top=80;
+      const cols=8, rows=12;
+      const cellW=(w-96)/cols;
+      const cellH=26;
+      doc.setDrawColor(180);
+      for(let r=0;r<=rows;r++) doc.line(left, top+r*cellH, w-48, top+r*cellH);
+      for(let c=0;c<=cols;c++) doc.line(left+c*cellW, top, left+c*cellW, top+rows*cellH);
+      doc.setTextColor(20,25,45);
+      doc.setFont('helvetica','bold');
+      doc.text('Habit', left+6, top-10);
+      doc.text('Days', left+cellW*2, top-10);
+
+      // budget
+      doc.addPage(meta.size.name);
+      addHeader(doc, meta, 'Simple Budget');
+      doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      doc.text('Income', 48, 80);
+      doc.rect(48, 92, w-96, 120);
+      doc.text('Expenses', 48, 240);
+      doc.rect(48, 252, w-96, 300);
+      doc.text('Notes', 48, 582);
+      doc.rect(48, 594, w-96, 160);
+    }
+
+    function ebookPages(doc, meta, sections){
+      doc.addPage(meta.size.name);
+      addHeader(doc, meta, 'Mini‑Ebook');
+      doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(20,25,45);
+      doc.text(meta.title, 48, 90, {maxWidth: meta.size.w-96});
+      doc.setFont('helvetica','normal'); doc.setFontSize(12); doc.setTextColor(60,70,90);
+      doc.text('A short, structured ebook template for testing product-market fit.', 48, 118, {maxWidth: meta.size.w-96});
+
+      let y=170;
+      for(let i=0;i<sections;i++){
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,25,45);
+        doc.text(`Section ${i+1}:`, 48, y);
+        y+=18;
+        doc.setFont('helvetica','normal'); doc.setTextColor(20,25,45);
+        doc.text('• Key idea\n• Example\n• Action step', 60, y);
+        y+=58;
+        if(y>meta.size.h-120){
+          doc.addPage(meta.size.name);
+          addHeader(doc, meta, 'Mini‑Ebook');
+          y=80;
+        }
+      }
+    }
+
+    function counts(size){
+      if(size==='small') return {recipes:6, coloring:10, ebookSections:6};
+      if(size==='large') return {recipes:18, coloring:40, ebookSections:18};
+      return {recipes:10, coloring:20, ebookSections:10};
+    }
+
+    async function generate(){
+      const picked = {
+        cookbook: $('cookbook').checked,
+        coloring: $('coloring').checked,
+        planner: $('planner').checked,
+        ebook: $('ebook').checked,
+      };
+      if(!picked.cookbook && !picked.coloring && !picked.planner && !picked.ebook){
+        log('Pick at least one product type.');
+        return;
+      }
+
+      const meta = {
+        title: $('title').value.trim() || 'Untitled',
+        subtitle: $('subtitle').value.trim() || '',
+        audience: $('aud').value,
+        theme: $('theme').value,
+        colors: themeColors($('theme').value),
+        size: pageSize($('fmt').value),
+      };
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({unit:'pt', format: meta.size.name});
+
+      log('Generating cover…');
+      addCover(doc, meta);
+
+      const cts = counts($('size').value);
+      const toc = [];
+      if(picked.cookbook) toc.push('Cookbook');
+      if(picked.coloring) toc.push('Coloring Book');
+      if(picked.planner) toc.push('Planner Bundle');
+      if(picked.ebook) toc.push('Mini‑Ebook');
+
+      log('Building table of contents…');
+      addTOC(doc, meta, toc.map((x,i)=>`${i+1}. ${x}`));
+
+      if(picked.cookbook){
+        log('Adding cookbook pages…');
+        cookbookPages(doc, meta, cts.recipes);
+      }
+      if(picked.coloring){
+        log('Adding coloring pages…');
+        coloringPages(doc, meta, cts.coloring);
+      }
+      if(picked.planner){
+        log('Adding planner pages…');
+        plannerPages(doc, meta);
+      }
+      if(picked.ebook){
+        log('Adding ebook pages…');
+        ebookPages(doc, meta, cts.ebookSections);
+      }
+
+      const safeName = meta.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'corvus-pdf';
+      const fname = `${safeName}.pdf`;
+
+      log('Saving PDF…');
+      doc.save(fname);
+
+      log(`✅ Done. Download started: ${fname}`);
+    }
+
+    $('gen').addEventListener('click', generate);
+    $('sample').addEventListener('click', ()=>{
+      const presets = [
+        ()=>{ $('cookbook').checked=true; $('coloring').checked=false; $('planner').checked=false; $('ebook').checked=false; $('theme').value='luxury'; $('title').value='Mediterranean Meal Prep'; $('subtitle').value='7 days of simple, healthy recipes'; },
+        ()=>{ $('cookbook').checked=false; $('coloring').checked=true; $('planner').checked=false; $('ebook').checked=false; $('theme').value='cute'; $('title').value='Cute Coloring Book'; $('subtitle').value='60 printable pages'; $('size').value='large'; },
+        ()=>{ $('cookbook').checked=false; $('coloring').checked=false; $('planner').checked=true; $('ebook').checked=false; $('theme').value='minimal'; $('title').value='Weekly Reset Planner'; $('subtitle').value='Plan, track, and ship'; },
+        ()=>{ $('cookbook').checked=false; $('coloring').checked=false; $('planner').checked=false; $('ebook').checked=true; $('theme').value='bold'; $('title').value='Stop Overthinking'; $('subtitle').value='A short practical guide (test edition)'; },
+        ()=>{ $('cookbook').checked=true; $('coloring').checked=true; $('planner').checked=true; $('ebook').checked=false; $('theme').value='bold'; $('title').value='The Busy Week Bundle'; $('subtitle').value='Food + focus + follow-through'; },
+      ];
+      presets[Math.floor(Math.random()*presets.length)]();
+      log('Preset applied. Click “Generate PDF”.');
+    });
+  </script>
+</body>
+</html>

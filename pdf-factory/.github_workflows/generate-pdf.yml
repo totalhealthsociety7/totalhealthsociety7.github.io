@@ -1,0 +1,37 @@
+name: Generate PDF
+on:
+  repository_dispatch:
+    types: [generate-pdf]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install
+        run: |
+          cd pdf-service || true
+          npm install --no-audit --no-fund
+      - name: Run generator
+        env:
+          DISPATCH_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: |
+          node pdf-service/server.js & sleep 1
+          python3 - <<'PY'
+import os, json, urllib.request
+payload = json.loads(os.environ.get('DISPATCH_PAYLOAD','{}'))
+html = payload.get('html','<html><body><h1>No HTML</h1></body></html>')
+url = 'http://127.0.0.1:3003/api/generate-pdf'
+req = urllib.request.Request(url, data=json.dumps({'html':html}).encode('utf-8'), headers={'Content-Type':'application/json'})
+with urllib.request.urlopen(req, timeout=120) as r:
+    print(r.read().decode('utf-8'))
+PY
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-pdf
+          path: pdf-service/out
