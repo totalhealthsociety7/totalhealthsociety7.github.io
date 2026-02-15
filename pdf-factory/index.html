@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Corvus PDF Factory (MVP)</title>
   <style>
-    :root{--bg:#0b1020;--card:#111a33;--txt:#eaf0ff;--mut:#9fb0d6;--acc:#7c5cff;--ok:#2ee59d;--warn:#ffcc66;--bd:rgba(255,255,255,.10)}
+    :root{--bg:#ffffff;--card:#ffffff;--txt:#08331a;--mut:#2f6b4a;--acc:#2ea65a;--ok:#2ea65a;--warn:#ffcc66;--bd:rgba(16,64,42,.08)}
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1100px 700px at 20% 0%,#1b2c6b 0%,#0b1020 60%);color:var(--txt)}
     .wrap{max-width:980px;margin:0 auto;padding:22px}
@@ -63,12 +63,11 @@
 
         <div class="row">
           <div>
-            <label>Theme</label>
-            <select id="theme">
-              <option value="minimal">Minimal</option>
-              <option value="bold" selected>Bold</option>
-              <option value="cute">Cute</option>
-              <option value="luxury">Luxury</option>
+            <label>Diet profile</label>
+            <select id="dietProfile">
+              <option value="diabetes">Diabetes‑friendly (demo)</option>
+              <option value="ckd">Renal‑aware (CKD) (demo)</option>
+              <option value="weightloss" selected>Meal‑Prep for Weight Loss (demo)</option>
             </select>
           </div>
           <div>
@@ -83,11 +82,11 @@
         <div class="row">
           <div>
             <label>Title</label>
-            <input id="title" value="The Busy Week Reset" />
+            <input id="title" value="Clinical Diet Demo" />
           </div>
           <div>
             <label>Subtitle</label>
-            <input id="subtitle" value="Simple systems for food, focus, and follow‑through" />
+            <input id="subtitle" value="Sample meal plans for the selected diet profile" />
           </div>
         </div>
 
