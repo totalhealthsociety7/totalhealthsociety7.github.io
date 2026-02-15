@@ -38,7 +38,8 @@ COPY package.json package-lock.json* ./
 
 # Install production deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-RUN npm ci --only=production || npm install --only=production
+# use npm install omitting dev deps to avoid optional dev packages
+RUN npm install --production --omit=dev --no-audit --no-fund || true
 
 COPY . .
 
