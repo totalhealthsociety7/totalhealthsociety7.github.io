@@ -1,8 +1,24 @@
-# Node modules
+# Node
 **/node_modules
+npm-debug.log*
+.env
+.env.local
+.env.*.local
 
-# PDF outputs
+# Output
 pdf-service/out
 
-# OS files
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Editor
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
