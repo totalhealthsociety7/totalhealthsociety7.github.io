@@ -22,6 +22,9 @@ if (fs.existsSync(uiPath)) {
       <p>This is a minimal staging UI. Use the form below to POST a small HTML to <code>/api/generate-pdf</code> and download the returned PDF.</p>
       <form id="f"><label>Title (for demo): <input id="t" value="Demo PDF" /></label><br/><label>Body HTML:<br/><textarea id="h" style="width:100%;height:200px"><h1>Demo</h1><p>This is a test PDF.</p></textarea></label><br/><button type="button" onclick="gen()">Generate PDF</button></form>
       <pre id="out" style="background:#f6fff6;padding:12px;border:1px solid #eee;margin-top:12px"></pre>
+      <div id="downloadArea" style="margin-top:12px; display:none;">
+        <a id="downloadLink" href="#" target="_blank" rel="noopener" style="display:inline-block;padding:10px 14px;background:#0b6;color:#031;border-radius:8px;text-decoration:none;font-weight:700;">Download PDF</a>
+      </div>
       <script>
       async function gen(){
         const html = document.getElementById('h').value;
@@ -29,7 +32,11 @@ if (fs.existsSync(uiPath)) {
         const data = await res.json();
         if(data.url){
           document.getElementById('out').textContent = 'PDF: ' + data.url;
-          window.open(data.url,'_blank');
+          const dl = document.getElementById('downloadLink');
+          dl.href = data.url;
+          dl.setAttribute('download','corvus.pdf');
+          document.getElementById('downloadArea').style.display = 'block';
+          try{ window.open(data.url,'_blank'); }catch(e){}
         } else {
           document.getElementById('out').textContent = JSON.stringify(data);
         }
