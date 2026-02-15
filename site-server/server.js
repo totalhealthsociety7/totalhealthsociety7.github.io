@@ -6,8 +6,19 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Simple HTTP Basic Auth middleware for short-lived testing
-const AUTH_USER = 'tester';
-const AUTH_PASS = 'ujsQ6EEg4pat'; // auto-generated — change if you want
+const fs = require('fs');
+let AUTH_USER = 'tester';
+let AUTH_PASS = 'ujsQ6EEg4pat';
+try{
+  const env = fs.readFileSync(path.join(__dirname,'.env'), 'utf8');
+  env.split(/\r?\n/).forEach(line=>{
+    const m=line.match(/^\s*([A-Z0-9_]+)=(.*)$/);
+    if(m){
+      if(m[1]==='PDF_USERNAME') AUTH_USER = m[2];
+      if(m[1]==='PDF_PASSWORD') AUTH_PASS = m[2];
+    }
+  });
+}catch(e){/* ignore */}
 function auth(req, res, next) {
   const user = basicAuth(req);
   if (!user || user.name !== AUTH_USER || user.pass !== AUTH_PASS) {
